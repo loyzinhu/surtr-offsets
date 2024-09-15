@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offsets @ Surtr</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #333;
+            color: #fff;
+            font-family: Consolas, monospace;
+        }
+        header {
+            text-align: center;
+            margin: 20px;
+        }
+        .glow-text {
+            color: blue;
+            font-size: 26px;
+            text-shadow: 0 0 10px blue;
+        }
+        .button-container {
+            text-align: center;
+            margin: 20px;
+        }
+        .button {
+            background: #444;
+            color: #fff;
+            border: 2px solid blue;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 10px;
+            margin: 0 10px;
+            display: inline-block;
+        }
+        .button:hover {
+            background: #555;
+        }
+        .info-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 16px;
+            color: blue;
+        }
+        .box {
+            display: none;
+            margin: 20px auto;
+            padding: 5px 15px;
+            border: 2px solid blue;
+            border-radius: 10px;
+            max-width: 406px;
+            background: #222;
+            color: blue;
+            box-shadow: 0 0 15px blue;
+            text-align: left;
+            box-sizing: border-box;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .box-content {
+            font-size: 17px;
+            line-height: 1.5;
+        }
+        .show {
+            display: block;
+        }
+        #returnButton {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="glow-text">Offsets @ Surtr</div>
+        <div class="button-container">
+            <a href="#" class="button" id="returnButton">Return to Dashboard</a>
+            <button class="button" id="copyButton" style="display: none;">⬜</button>
+        </div>
+    </header>
+    <div class="button-container">
+        <a href="#" class="button" id="robloxButton">Roblox</a>
+    </div>
+    <div class="info-text">
+        Então me diz ae, tu vai matar ou vai morrer?
+    </div>
+    <div id="robloxBox" class="box">
+        <pre id="robloxContent" class="box-content">credits die Surtr
+render_to_engine -> 0x10
+render_to_fake_data_model -> 0x118
+fake_data_model_to_real_data_model -> 0x198
+name -> 0x48
+class_descriptor -> 0x18
+children -> 0x50
+parent -> 0x60
+child_size -> 0x8
+game_id -> 0x160
+place_id -> 0x168
+game_loaded -> 0x3b1
+local_player -> 0x100
+model_instance -> 0x298
+display_name -> 0x100
+user_id -> 0x1e8
+team -> 0x1d0
+camera_min_zoom_distance -> 0x23c
+camera_max_zoom_distance -> 0x238
+health -> 0x17c
+max_health -> 0x1a8
+walk_speed_a -> 0x1c0
+walk_speed_b -> 0x398
+jump_power -> 0x1a4
+hip_height -> 0x194
+max_slope_angle -> 0x1ac
+rig_type -> 0x1b8
+move_direction -> 0x13c
+sit -> 0x1cc
+primitive -> 0x158
+base_part_size -> 0x2ac
+base_part_position -> 0x140
+c_frame -> 0x11c
+assembly_linear_velocity -> 0x14c
+assembly_angular_velocity -> 0x158
+base_part_color -> 0x188
+transparency -> 0xdc
+local_transparency_modifier -> 0xe0
+reflectance -> 0xd8
+anchored -> 0x309
+can_collide -> 0x30b
+mesh_id -> 0x258
+texture_id -> 0x280
+current_camera -> 0x420
+camera_subject -> 0xc0
+camera_position -> 0xf4
+camera_rotation -> 0xd0
+camera_head_scale -> 0x144
+camera_focus -> 0x100
+camera_fov -> 0x134
+brightness -> 0x11c
+fog_end -> 0x12c
+global_shadows -> 0x138
+client_dimensions -> 0x720
+view_matrix -> 0x4b0
+absolute_position -> 0x100
+absolute_size -> 0x108
+value -> 0xc0
+text_label_color3 -> 0xaa0
+text_label_text -> 0x9f8
+adornee -> 0xc0
+mouse_sensitivity -> 0x22c
+input_object -> 0xf0
+mouse_position -> 0xdc
+        </pre>
+    </div>
+
+    <script>
+        function loadContent(fileName, contentId) {
+            fetch(`offsets/${fileName}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById(contentId).innerHTML = data
+                        .replace(/^\s+/gm, '')
+                        .replace(/"/g, '')
+                        .replace(/:/g, ' = ')
+                        .replace(/;/g, '')
+                        .replace(/,/g, '')
+                        .trim()
+                        .replace(/\n/g, '<br>');
+                })
+                .catch(error => console.error('Error loading content:', error));
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+
+        document.getElementById('robloxButton').addEventListener('click', function() {
+            document.getElementById('robloxBox').classList.add('show');
+            document.getElementById('robloxButton').style.display = 'none';
+            document.getElementById('returnButton').style.display = 'inline-block';
+            document.getElementById('copyButton').style.display = 'inline-block';
+            loadContent('roblox.txt', 'robloxContent');
+        });
+
+        document.getElementById('returnButton').addEventListener('click', function() {
+            document.getElementById('robloxBox').classList.remove('show');
+            document.getElementById('robloxButton').style.display = 'inline-block';
+            document.getElementById('returnButton').style.display = 'none';
+            document.getElementById('copyButton').style.display = 'none';
+        });
+
+        document.getElementById('copyButton').addEventListener('click', function() {
+            const content = document.getElementById('robloxContent').innerText.replace(/\s+/g, ' ').trim();
+            copyToClipboard(content);
+            alert('Offsets copied to clipboard!');
+        });
+    </script>
+</body>
+</html>
