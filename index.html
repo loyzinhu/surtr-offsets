@@ -80,94 +80,32 @@
         </div>
     </header>
     <div class="button-container">
-        <a href="#" class="button" id="robloxButton">Roblox</a>
+        <a href="#" class="button" id="apiButton">Get Offsets from API</a>
     </div>
     <div class="info-text">
         Então me diz ae, tu vai matar ou vai morrer?
     </div>
-    <div id="robloxBox" class="box">
-        <pre id="robloxContent" class="box-content">credits die Surtr
-render_to_engine -> 0x10
-render_to_fake_data_model -> 0x118
-fake_data_model_to_real_data_model -> 0x198
-name -> 0x48
-class_descriptor -> 0x18
-children -> 0x50
-parent -> 0x60
-child_size -> 0x8
-game_id -> 0x160
-place_id -> 0x168
-game_loaded -> 0x3b1
-local_player -> 0x100
-model_instance -> 0x298
-display_name -> 0x100
-user_id -> 0x1e8
-team -> 0x1d0
-camera_min_zoom_distance -> 0x23c
-camera_max_zoom_distance -> 0x238
-health -> 0x17c
-max_health -> 0x1a8
-walk_speed_a -> 0x1c0
-walk_speed_b -> 0x398
-jump_power -> 0x1a4
-hip_height -> 0x194
-max_slope_angle -> 0x1ac
-rig_type -> 0x1b8
-move_direction -> 0x13c
-sit -> 0x1cc
-primitive -> 0x158
-base_part_size -> 0x2ac
-base_part_position -> 0x140
-c_frame -> 0x11c
-assembly_linear_velocity -> 0x14c
-assembly_angular_velocity -> 0x158
-base_part_color -> 0x188
-transparency -> 0xdc
-local_transparency_modifier -> 0xe0
-reflectance -> 0xd8
-anchored -> 0x309
-can_collide -> 0x30b
-mesh_id -> 0x258
-texture_id -> 0x280
-current_camera -> 0x420
-camera_subject -> 0xc0
-camera_position -> 0xf4
-camera_rotation -> 0xd0
-camera_head_scale -> 0x144
-camera_focus -> 0x100
-camera_fov -> 0x134
-brightness -> 0x11c
-fog_end -> 0x12c
-global_shadows -> 0x138
-client_dimensions -> 0x720
-view_matrix -> 0x4b0
-absolute_position -> 0x100
-absolute_size -> 0x108
-value -> 0xc0
-text_label_color3 -> 0xaa0
-text_label_text -> 0x9f8
-adornee -> 0xc0
-mouse_sensitivity -> 0x22c
-input_object -> 0xf0
-mouse_position -> 0xdc
-        </pre>
+    <div id="apiBox" class="box">
+        <pre id="apiContent" class="box-content">Fetching offsets...</pre>
     </div>
 
     <script>
-        function loadContent(fileName, contentId) {
-            fetch(`offsets/${fileName}`)
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById(contentId).innerHTML = data
-                        .replace(/^\s+/gm, '')
-                        .replace(/"/g, '')
-                        .replace(/:/g, ' = ')
-                        .replace(/;/g, '')
-                        .replace(/,/g, '')
-                        .trim()
-                        .replace(/\n/g, '<br>');
+        function fetchOffsetsFromAPI() {
+            fetch('https://rbxstats.xyz/api/offsets/')
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
                 })
-                .catch(error => console.error('Error loading content:', error));
+                .then(data => {
+                    const formattedOffsets = JSON.stringify(data, null, 4);
+                    document.getElementById('apiContent').innerText = formattedOffsets;
+                    document.getElementById('apiBox').classList.add('show');
+                    document.getElementById('copyButton').style.display = 'inline-block'; // Show copy button
+                })
+                .catch(error => {
+                    console.error('Error fetching offsets:', error);
+                    document.getElementById('apiContent').innerText = 'Failed to fetch offsets. Please check the API or CORS settings.';
+                });
         }
 
         function copyToClipboard(text) {
@@ -179,23 +117,19 @@ mouse_position -> 0xdc
             document.body.removeChild(textarea);
         }
 
-        document.getElementById('robloxButton').addEventListener('click', function() {
-            document.getElementById('robloxBox').classList.add('show');
-            document.getElementById('robloxButton').style.display = 'none';
-            document.getElementById('returnButton').style.display = 'inline-block';
-            document.getElementById('copyButton').style.display = 'inline-block';
-            loadContent('roblox.txt', 'robloxContent');
+        document.getElementById('apiButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default anchor click behavior
+            fetchOffsetsFromAPI();
         });
 
         document.getElementById('returnButton').addEventListener('click', function() {
-            document.getElementById('robloxBox').classList.remove('show');
-            document.getElementById('robloxButton').style.display = 'inline-block';
+            document.getElementById('apiBox').classList.remove('show');
             document.getElementById('returnButton').style.display = 'none';
             document.getElementById('copyButton').style.display = 'none';
         });
 
         document.getElementById('copyButton').addEventListener('click', function() {
-            const content = document.getElementById('robloxContent').innerText.replace(/\s+/g, ' ').trim();
+            const content = document.getElementById('apiContent').innerText;
             copyToClipboard(content);
             alert('Offsets copied to clipboard!');
         });
